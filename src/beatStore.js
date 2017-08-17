@@ -1,26 +1,31 @@
 import audioContext from 'audioContext';
 
-let expectedDiff = null;
+let startTime = null;
+let beatTime = null;
 let lastTime = null;
 let ticks = 0;
 
-export function emitInit(bpm) {
-  expectedDiff = 60 / bpm / 4;
-  lastTime = audioContext.currentTime;
-  ticks = 0;
+export function startBeat(bpm, timeout) {
+  startTime = audioContext.currentTime + timeout;
+  beatTime = 60 / bpm;
 }
 
-export function emitTick() {
-  if (ticks % 4 === 3) {
-    lastTime = audioContext.currentTime + expectedDiff;
-  }
-  ticks += 1;
+export function stopBeat() {
+  startTime = null;
 }
 
-export function beatAnimation() {
-  if (lastTime === null) {
-    return null;
+export function beatValue() {
+  if (startTime === null) {
+    return 0;
   }
-  const result = 1 - Math.abs((lastTime - audioContext.currentTime) / expectedDiff);
-  return Math.max(Math.min(result, 1), 0) ** 2;
+
+  const diff = audioContext.currentTime - startTime;
+  if (diff < -beatTime / 2) {
+    // Start the animation half a beat before the song starts
+    return 0;
+  }
+
+  const x = ((diff + beatTime) % beatTime) / beatTime;
+  const y = (2 * x - 1) ** 6;
+  return Math.max(Math.min(y, 1), 0);
 }

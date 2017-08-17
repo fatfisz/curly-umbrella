@@ -1,4 +1,14 @@
 import audioContext from 'audioContext';
+import { startBeat, stopBeat } from 'beatStore';
+
+const timeout = 1;
+const masterVolume = 0.35;
+
+function getFrequencyFromNoteNumber(note) {
+  const magic = 16 * 4;
+  const period = 10 * 12 * magic - note * magic;
+  return 8363 * Math.pow(2, (6 * 12 * magic - period) / (12 * magic));
+}
 
 class SampleWrapper {
   constructor(sample) {
@@ -38,18 +48,95 @@ export default class Song {
     this.loopAt = loopAt;
     this.notesPerPattern = notesPerPattern;
     this.patternsPerChannel = patternsPerChannel;
-    this.samplesPerBar = Math.round(audioContext.sampleRate * 60 / (bpm * 4));
+    this.samplesPerNote = Math.round(audioContext.sampleRate * 60 / (bpm * 4));
     this.sampleRatio = 44100 / audioContext.sampleRate;
-  }
-
-  init() {
     this.bufferPosition = 0;
     this.currentPattern = this.startAt;
-    this.currentBar = 0;
+    this.currentNote = 0;
     for (const { sample } of this.channels) {
       sample.init();
     }
+    this.prepareAudioBuffer();
+  }
 
+  prepareAudioBuffer() {
+    this.audioBuffer = audioContext.createBuffer(
+      1,
+      this.notesPerPattern * this.patternsPerChannel * this.samplesPerNote,
+      audioContext.sampleRate,
+    );
+
+    const buffer = this.audioBuffer.getChannelData(0);
+    buffer.fill(0);
+
+    for (let i = 0; i < buffer.length; ++i) {
+      if (this.bufferPosition % this.samplesPerNote === 0) {
+
+        for (const { notes, patterns, sample } of this.channels) {
+          if (!patterns[this.currentPattern]) {
+            continue;
+          }
+
+          const note = notes[this.currentNote];
+
+          if (typeof note === 'undefined') {
+            continue;
+          }
+
+          if (note === 0) {
+            sample.playbackRate = 0;
+            continue;
+          }
+
+          sample.position = 0;
+          sample.playbackRate = getFrequencyFromNoteNumber(note) / getFrequencyFromNoteNumber(49) * this.sampleRatio;
+        }
+
+        this.currentNote++;
+
+        if (this.currentNote === this.notesPerPattern) {
+          this.currentNote = 0;
+          this.currentPattern += 1;
+          if (this.currentPattern === this.patternsPerChannel) {
+            this.currentPattern = this.loopAt;
+          }
+        }
+      }
+
+      let value = 0;
+
+      for (const { sample } of this.channels) {
+        if (sample.playbackRate !== 0) {
+          value += sample.data[Math.floor(sample.position)];
+          sample.position += sample.playbackRate;
+          if (sample.position >= sample.data.length) {
+            sample.playbackRate = 0;
+          }
+        }
+      }
+
+      buffer[i] = value * masterVolume;
+      this.bufferPosition += 1;
+    }
+  }
+
+  start() {
+    const source = audioContext.createBufferSource();
+    source.buffer = this.audioBuffer;
+    source.connect(audioContext.destination);
+    source.loop = true;
+    source.loopStart = this.loopAt * this.notesPerPattern * 60 / (4 * this.bpm);
+    source.loopEnd = source.buffer.duration;
+    source.start(audioContext.currentTime + timeout);
+    startBeat(this.bpm, timeout);
+    this.source = source;
     return this;
+  }
+
+  stop() {
+    stopBeat();
+    this.source.stop();
+    this.source.disconnect(audioContext.destination);
+    this.source = null;
   }
 }

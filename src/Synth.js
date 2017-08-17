@@ -3,7 +3,6 @@
  */
 
 import audioContext from 'audioContext';
-import { emitInit, emitTick } from 'beatStore';
 import jsfxr from 'jsfxr';
 import songs from 'songs';
 
@@ -21,74 +20,7 @@ function SynthChannel() {
 
 export default class Synth {
   constructor() {
-    this.songVolume = 0.35;
     this.currentSong = null;
-
-    const music = audioContext.createScriptProcessor(2 ** 10, 0, 1);
-    music.onaudioprocess = this.fillAudioNodeBuffer.bind(this);
-    music.connect(audioContext.destination);
-  }
-
-  fillAudioNodeBuffer(event) {
-    const buffer = event.outputBuffer.getChannelData(0);
-    buffer.fill(0);
-
-    if (!this.currentSong) {
-      return;
-    }
-
-    const song = this.currentSong;
-
-    for (let i = 0; i < buffer.length; ++i) {
-      if (song.bufferPosition % song.samplesPerBar === 0) {
-        emitTick();
-
-        for (const { notes, patterns, sample } of song.channels) {
-          if (!patterns[song.currentPattern]) {
-            continue;
-          }
-
-          const note = notes[song.currentBar];
-
-          if (typeof note === 'undefined') {
-            continue;
-          }
-
-          if (note === 0) {
-            sample.playbackRate = 0;
-            continue;
-          }
-
-          sample.position = 0;
-          sample.playbackRate = getFrequencyFromNoteNumber(note) / getFrequencyFromNoteNumber(49) * song.sampleRatio;
-        }
-
-        song.currentBar++;
-
-        if (song.currentBar === song.notesPerPattern) {
-          song.currentBar = 0;
-          song.currentPattern += 1;
-          if (song.currentPattern === song.patternsPerChannel) {
-            song.currentPattern = song.loopAt;
-          }
-        }
-      }
-
-      let value = 0;
-
-      for (const { sample } of song.channels) {
-        if (sample.playbackRate !== 0) {
-          value += sample.data[Math.floor(sample.position)];
-          sample.position += sample.playbackRate;
-          if (sample.position >= sample.data.length) {
-            sample.playbackRate = 0;
-          }
-        }
-      }
-
-      buffer[i] = value * this.songVolume;
-      song.bufferPosition += 1;
-    }
   }
 
   playSong(id) {
@@ -97,11 +29,11 @@ export default class Synth {
     if (this.currentSong === song) {
       return;
     }
-    emitInit(song.bpm);
-    this.currentSong = song.init();
+    this.currentSong = song.start();
   }
 
   stop() {
+    this.currentSong.stop();
     this.currentSong = null;
   }
 }

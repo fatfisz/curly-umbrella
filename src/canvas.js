@@ -1,5 +1,5 @@
 import audioContext from 'audioContext';
-import { beatAnimation } from 'beatStore';
+import { beatValue } from 'beatStore';
 import svgImage from 'svgImage';
 
 const canvas = document.getElementById('canvas');
@@ -59,7 +59,7 @@ function draw(now = 0) {
   }
 
   const offset = now / 20000;
-  const radius = coordY(baseRadius + beatAnimation() / 100);
+  const radius = coordY(baseRadius + beatValue() / 100);
 
   context.setTransform(1, 0, 0, 1, 0, 0);
   context.fillStyle = '#BBF3FC';
