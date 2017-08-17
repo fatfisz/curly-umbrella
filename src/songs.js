@@ -51,6 +51,7 @@ export default {
 
       { sample: squareLead, patterns: [ , ,1, ,1, , , ], notes: [G5,,,,D5,,,,,,D5,,,,G5,,F5,,E5,,F5,,D5,,,,D5,,C5] },
       { sample: squareLead, patterns: [ , , ,1, ,1, , ], notes: [H4,,,,G4,,,,,,G4,,H4,,G4,,F4,,C5,,D5,,E5,,,,E5,,D5] },
+      { sample: squareLead, patterns: [ , , , , ,1, , ], notes: [,C5,H4,0] },
       { sample: squareLead, patterns: [ , , , , , ,1, ], notes: [C5,,,,G5,,E5,,,,C5,,,,C5,,G4,,D5,,C5,,H4,,,,G4,,A4,,H4] },
       { sample: squareLead, patterns: [ , , , , , , ,1], notes: [F5,,F4,,E5,,F4,,D5,,F4,,C5,,F4,,H4,,C5,,D5,,G4] },
 
