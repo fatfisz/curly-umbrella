@@ -43,13 +43,12 @@ const midY = 6;
 const baseRadius = 5.2;
 
 function drawTree(radius, angle) {
-  const width = tree.width * coordY(radius) / 5000;
-  const height = tree.height * coordY(radius) / 5000;
-  context.restore();
-  context.save();
-  context.translate(coordX(midX), coordY(midY));
-  context.rotate(angle);
-  context.drawImage(tree, -width / 2, -coordY(radius) - height, width, height);
+  const width = tree.width * radius / 5000;
+  const height = tree.height * radius / 5000;
+  const sin = Math.sin(angle);
+  const cos = Math.cos(angle);
+  context.setTransform(cos, sin, -sin, cos, ...coords(midX, midY));
+  context.drawImage(tree, -width / 2, -radius - height, width, height);
 }
 
 function draw(now = 0) {
@@ -60,17 +59,15 @@ function draw(now = 0) {
   }
 
   const offset = now / 20000;
+  const radius = coordY(baseRadius + beatAnimation() / 100);
 
-  const radius = baseRadius + beatAnimation() / 100;
-
-  context.restore();
-  context.save();
+  context.setTransform(1, 0, 0, 1, 0, 0);
   context.fillStyle = '#BBF3FC';
   context.fillRect(0, 0, ...coords(1, 1));
 
   context.beginPath();
   context.fillStyle = '#8BE075';
-  context.arc(...coords(midX, midY), coordY(radius), 0, circle);
+  context.arc(...coords(midX, midY), radius, 0, circle);
   context.fill();
 
   const number = 128;
