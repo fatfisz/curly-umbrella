@@ -32,8 +32,8 @@ function generateNumbers() {
 let index = 0;
 
 export default function random() {
-  if (index >= length) {
-    index = 0;
+  if (index === 0) {
+    generateNumbers();
   }
 
   let y = state[index];
