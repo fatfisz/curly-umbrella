@@ -43,8 +43,8 @@ const midY = 6;
 const baseRadius = 5.2;
 
 function drawTree(radius, angle) {
-  const width = tree.width * radius / 5;
-  const height = tree.height * radius / 5;
+  const width = tree.width * coordY(radius) / 5000;
+  const height = tree.height * coordY(radius) / 5000;
   context.restore();
   context.save();
   context.translate(coordX(midX), coordY(midY));
