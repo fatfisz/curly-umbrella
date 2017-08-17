@@ -13,5 +13,4 @@ function togglePlay() {
   playing = !playing;
 }
 
-document.getElementById('playback').onclick = togglePlay;
-togglePlay();
+document.getElementById('canvas').onclick = togglePlay;
