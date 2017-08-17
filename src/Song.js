@@ -32,6 +32,7 @@ export default class Song {
       }
     }
 
+    this.bpm = bpm;
     this.channels = channels;
     this.startAt = startAt;
     this.loopAt = loopAt;

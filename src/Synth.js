@@ -3,6 +3,7 @@
  */
 
 import audioContext from 'audioContext';
+import { emitBeat, emitInit } from 'beatStore';
 import jsfxr from 'jsfxr';
 import songs from 'songs';
 
@@ -46,6 +47,8 @@ export default class Synth {
 
     for (let i = 0; i < buffer.length; ++i) {
       if (song.bufferPosition % song.samplesPerBar === 0) {
+        emitBeat();
+
         for (const { notes, patterns, sample } of song.channels) {
           if (!patterns[song.currentPattern]) {
             continue;
@@ -100,6 +103,7 @@ export default class Synth {
     if (this.currentSong === song) {
       return;
     }
+    emitInit(song.bpm);
     this.currentSong = song.init(this.synthChannels);
   }
 
