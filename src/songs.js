@@ -1,7 +1,7 @@
 import Sample from 'Sample';
 import Song from 'Song';
 
-// Notes (it's more convenient _not_ to impor them...)
+// Notes (it's more convenient _not_ to import them...)
 const C3 = 37;
 const D3 = 39;
 const E3 = 41;
