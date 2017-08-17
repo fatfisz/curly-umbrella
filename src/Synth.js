@@ -23,12 +23,6 @@ export default class Synth {
   constructor() {
     this.songVolume = 0.35;
     this.currentSong = null;
-    this.synthChannels = [];
-
-    // initialize 24 channels for music
-    for (let i = 0; i < 24; ++i) {
-      this.synthChannels[i] = new SynthChannel();
-    }
 
     const music = audioContext.createScriptProcessor(2 ** 10, 0, 1);
     music.onaudioprocess = this.fillAudioNodeBuffer.bind(this);
@@ -104,7 +98,7 @@ export default class Synth {
       return;
     }
     emitInit(song.bpm);
-    this.currentSong = song.init(this.synthChannels);
+    this.currentSong = song.init();
   }
 
   stop() {
