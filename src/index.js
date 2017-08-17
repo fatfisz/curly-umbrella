@@ -1,3 +1,4 @@
+import initCanvas from 'canvas';
 import Synth from 'Synth';
 
 const synth = new Synth();
@@ -14,3 +15,5 @@ function togglePlay() {
 }
 
 document.getElementById('canvas').onclick = togglePlay;
+
+initCanvas();
