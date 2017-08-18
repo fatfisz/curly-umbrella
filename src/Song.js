@@ -1,7 +1,6 @@
 import audioContext from 'audioContext';
 import { startBeat, stopBeat } from 'beatStore';
 
-const timeout = 1;
 const masterVolume = 0.35;
 
 function getFrequencyFromNoteNumber(note) {
@@ -127,8 +126,7 @@ export default class Song {
     source.loop = true;
     source.loopStart = this.loopAt * this.notesPerPattern * 60 / (4 * this.bpm);
     source.loopEnd = source.buffer.duration;
-    source.start(audioContext.currentTime + timeout);
-    startBeat(this.bpm, timeout);
+    source.start(startBeat(this.bpm));
     this.source = source;
     return this;
   }
