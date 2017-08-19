@@ -7,4 +7,11 @@ export default class Sample {
     this.buffer = buffer;
     this.rawData = rawData;
   }
+
+  play() {
+    const source = audioContext.createBufferSource();
+    source.buffer = this.buffer;
+    source.connect(audioContext.destination);
+    source.start();
+  }
 }
