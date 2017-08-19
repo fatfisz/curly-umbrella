@@ -1,3 +1,7 @@
+/**
+ * Modified from: https://github.com/gheja/glitch13k/blob/master/src/synth.js
+ */
+
 import audioContext from 'audioContext';
 import { startBeat, stopBeat } from 'beatStore';
 
@@ -119,7 +123,7 @@ export default class Song {
     }
   }
 
-  start() {
+  play() {
     const source = audioContext.createBufferSource();
     source.buffer = this.audioBuffer;
     source.connect(audioContext.destination);
@@ -133,7 +137,7 @@ export default class Song {
 
   stop() {
     stopBeat();
-    this.source.disconnect();
+    this.source.stop();
     this.source = null;
   }
 }

@@ -1,14 +1,13 @@
 import initCanvas from 'canvas';
-import Synth from 'Synth';
+import * as songs from 'Songs';
 
-const synth = new Synth();
 let playing = false;
 
 function togglePlay() {
   if (playing) {
-    synth.stop();
+    songs.level1.stop();
   } else {
-    synth.playSong('level1');
+    songs.level1.play();
   }
 
   playing = !playing;
