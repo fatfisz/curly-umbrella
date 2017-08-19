@@ -133,8 +133,7 @@ export default class Song {
 
   stop() {
     stopBeat();
-    this.source.stop();
-    this.source.disconnect(audioContext.destination);
+    this.source.disconnect();
     this.source = null;
   }
 }
