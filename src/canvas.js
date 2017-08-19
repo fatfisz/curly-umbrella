@@ -1,5 +1,5 @@
 import audioContext from 'audioContext';
-import { beatValue, lineAngles, treeAngles } from 'beatStore';
+import { beatValue, lineAngles, treeAngles, treeOutlineAngles } from 'beatStore';
 import { circle } from 'consts';
 import svgImage from 'svgImage';
 
@@ -32,16 +32,27 @@ function setSizeFromWindow() {
   canvas.height = height;
 }
 
-const tree = svgImage(`
+const strokeStyle = `
+  stroke-linejoin="round"
+  stroke-width="2"
+`;
+
+const treeOutline = svgImage(`
   <svg xmlns="http://www.w3.org/2000/svg" width="40" height="50" viewBox="0 0 40 50">
     <path
       d="M15.5 44v5h10v-5m-5-43L39 44H1z"
       fill="none"
       stroke="rgba(0, 0, 0, 0.3)"
       stroke-dasharray="4 1.5"
-      stroke-linejoin="round"
-      stroke-width="2"
+      ${strokeStyle}
     />
+  </svg>
+`);
+
+const tree = svgImage(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="50" viewBox="0 0 40 50">
+    <path d="M15.5 44v5h10v-5" fill="#ba8659" stroke="#ba8659" ${strokeStyle} />
+    <path d="M20.5 1L39 44H1z" fill="#64a154" stroke="#64a154" ${strokeStyle} />
   </svg>
 `);
 
@@ -53,14 +64,14 @@ function sizeMultiplier() {
   return coordY(baseRadius) / 4000;
 }
 
-function drawTree(radius, angle, size) {
+function drawTree(image, radius, angle, size = 1) {
   const multiplier = sizeMultiplier() * size;
-  const width = tree.width * multiplier;
-  const height = tree.height * multiplier;
+  const width = image.width * multiplier;
+  const height = image.height * multiplier;
   const sin = Math.sin(angle);
   const cos = Math.cos(angle);
   context.setTransform(cos, sin, -sin, cos, ...coords(midX, midY));
-  context.drawImage(tree, -width / 2, -radius - height, width, height);
+  context.drawImage(image, -width / 2, -radius - height, width, height);
 }
 
 function treeCleanup() {
@@ -113,8 +124,11 @@ function draw(now = 0) {
   context.arc(...coords(midX, midY), radius, 0, circle);
   context.fill();
 
-  for (const [treeAngle, size] of treeAngles()) {
-    drawTree(radius, treeAngle, size);
+  for (const [treeOutlineAngle, size] of treeOutlineAngles()) {
+    drawTree(treeOutline, radius, treeOutlineAngle, size);
+  }
+  for (const treeAngle of treeAngles()) {
+    drawTree(tree, radius, treeAngle);
   }
   treeCleanup();
 

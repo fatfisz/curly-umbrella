@@ -3,6 +3,7 @@ import { circle } from 'consts';
 
 const speed = 0.08;
 const initialAngle = circle / 16 / speed;
+const trees = [];
 let startTime = null;
 let beatTime = null;
 let lastTime = null;
@@ -11,11 +12,16 @@ let ticks = 0;
 export function startBeat(bpm) {
   beatTime = 60 / bpm;
   startTime = audioContext.currentTime + initialAngle;
+  trees.length = 0;
   return startTime;
 }
 
 export function stopBeat() {
   startTime = null;
+}
+
+export function addTree() {
+  trees.push(audioContext.currentTime);
 }
 
 export function beatValue() {
@@ -38,6 +44,15 @@ const noTrees = [];
 const beats = [0, 1, 2, 2.5, 3, 4, 4.5, 5, 5.5, 6.5, 7];
 
 export function treeAngles() {
+  if (startTime === null) {
+    return noTrees;
+  }
+
+  const { currentTime } = audioContext;
+  return trees.map(treeTime => (treeTime - currentTime) * speed);
+}
+
+export function treeOutlineAngles() {
   if (startTime === null) {
     return noTrees;
   }
