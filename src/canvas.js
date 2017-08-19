@@ -33,9 +33,9 @@ function setSizeFromWindow() {
 }
 
 const tree = svgImage(`
-  <svg xmlns="http://www.w3.org/2000/svg" width="41" height="56" viewBox="0 0 41 56">
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="50" viewBox="0 0 40 50">
     <path
-      d="M15.5 50.5v5h10v-5m-5-50l20 50H.5z"
+      d="M15.5 44v5h10v-5m-5-43L39 44H1z"
       fill="none"
       stroke="rgba(0, 0, 0, 0.3)"
       stroke-dasharray="4 1.5"
