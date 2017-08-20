@@ -1,5 +1,5 @@
+import 'canvas';
 import { addTree } from 'beatStore';
-import initCanvas from 'canvas';
 import * as samples from 'Samples';
 import * as songs from 'Songs';
 
@@ -16,8 +16,6 @@ function togglePlay() {
 }
 
 document.getElementById('canvas').onclick = togglePlay;
-
-initCanvas();
 
 window.onkeydown = ({ which }) => {
   if (which == 67 || which == 88) { // c or x

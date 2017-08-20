@@ -99,7 +99,7 @@ function lineCleanup() {
   context.setLineDash([]);
 }
 
-function draw(now = 0) {
+function draw(now) {
   requestAnimationFrame(draw);
   if (resized) {
     resized = false;
@@ -143,4 +143,4 @@ window.onresize = () => {
   resized = true;
 };
 
-export default draw;
+requestAnimationFrame(draw);
