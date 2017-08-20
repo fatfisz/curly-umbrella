@@ -9,6 +9,6 @@ export default (options = {}) => ({
     return fs.readFileSync(options.wrapper, 'utf8')
       .replace(/\s(?![a-z]+=)/gi, '')
       .replace(/;(?=})/g, '')
-      .replace('${code}', code);
+      .replace('${code}', () => code);
   },
 });
