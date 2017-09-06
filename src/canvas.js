@@ -1,6 +1,6 @@
 import audioContext from 'audioContext';
 import { circle } from 'consts';
-import { beatValue, lineAngles, treeAngles, treeOutlineAngles } from 'store';
+import { beatValue, distances, lineAngles, treeAngles, treeOutlineAngles } from 'store';
 import svgImage from 'svgImage';
 
 const canvas = document.getElementById('canvas');
@@ -11,6 +11,11 @@ const ratio = 16 / 9;
 const midX = 0.2;
 const midY = 10;
 const baseRadius = 9.2;
+
+const distanceBarWidth = 0.2;
+const distanceBarHeight = 0.04;
+const distanceBarMargin = 0.06;
+const visibleDistances = 20;
 
 let width;
 let height;
@@ -100,6 +105,42 @@ function lineCleanup() {
   context.setLineDash([]);
 }
 
+function drawInfoBackground() {
+  context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  context.fillRect(...coords(0, 1 - distanceBarMargin * 2 - distanceBarHeight), ...coords(1, 1));
+}
+
+function drawDistanceBar() {
+  context.fillStyle = '#5A8FE8';
+  context.fillRect(
+    ...coords(0.5 - distanceBarWidth / 2, 1 - distanceBarMargin - distanceBarHeight),
+    ...coords(distanceBarWidth, distanceBarHeight),
+  );
+
+  context.fillStyle = '#6EE86D';
+  context.fillRect(
+    ...coords(0.5 - distanceBarWidth / 4, 1 - distanceBarMargin - distanceBarHeight),
+    ...coords(distanceBarWidth / 2, distanceBarHeight),
+  );
+
+  context.lineWidth = sizeMultiplier() * 1;
+
+  distances.slice(-visibleDistances).forEach((distance, index, { length }) => {
+    context.beginPath();
+    const alpha = (index + 1 + visibleDistances - length) / visibleDistances;
+    context.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+    const x = coordX(0.5 + distanceBarWidth / 2 * distance);
+    context.moveTo(x, coordY(1 - distanceBarMargin - distanceBarHeight));
+    context.lineTo(x, coordY(1 - distanceBarMargin));
+    context.stroke();
+  });
+}
+
+function drawInfo() {
+  drawInfoBackground();
+  drawDistanceBar();
+}
+
 function draw(now) {
   requestAnimationFrame(draw);
   if (resized) {
@@ -138,6 +179,8 @@ function draw(now) {
     drawTree(tree, radius, treeAngle);
   }
   treeCleanup();
+
+  drawInfo();
 }
 
 window.onresize = () => {
