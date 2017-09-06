@@ -124,6 +124,12 @@ function draw(now) {
   context.arc(...coords(midX, midY), radius, 0, circle);
   context.fill();
 
+  lineSetup();
+  for (const lineAngle of lineAngles()) {
+    drawLine(radius, lineAngle);
+  }
+  lineCleanup();
+
   for (const [treeOutlineAngle, size] of treeOutlineAngles()) {
     drawTree(treeOutline, radius, treeOutlineAngle, size);
   }
@@ -131,12 +137,6 @@ function draw(now) {
     drawTree(tree, radius, treeAngle);
   }
   treeCleanup();
-
-  lineSetup();
-  for (const lineAngle of lineAngles()) {
-    drawLine(radius, lineAngle);
-  }
-  lineCleanup();
 }
 
 window.onresize = () => {
