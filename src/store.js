@@ -2,16 +2,15 @@ import audioContext from 'audioContext';
 import { circle } from 'consts';
 
 const speed = 0.08;
-const initialAngle = circle / 16 / speed;
+const initialDelay = circle / 16 / speed;
+const emptyArray = [];
 const trees = [];
 let startTime = null;
-let beatTime = null;
-let lastTime = null;
-let ticks = 0;
+let beatTime;
 
 export function startBeat(bpm) {
   beatTime = 60 / bpm;
-  startTime = audioContext.currentTime + initialAngle;
+  startTime = audioContext.currentTime + initialDelay;
   trees.length = 0;
   return startTime;
 }
@@ -24,6 +23,7 @@ export function addTree() {
   trees.push(audioContext.currentTime);
 }
 
+// The planet pulsation animation
 export function beatValue() {
   if (startTime === null) {
     return 0;
@@ -40,25 +40,26 @@ export function beatValue() {
   return Math.max(Math.min(y, 1), 0);
 }
 
-const noTrees = [];
-const beats = [0, 1, 2, 2.5, 3, 4, 4.5, 5, 5.5, 6.5, 7];
-
 export function treeAngles() {
   if (startTime === null) {
-    return noTrees;
+    return emptyArray;
   }
 
+  // TODO: only return trees that will be visible
   const { currentTime } = audioContext;
   return trees.map(treeTime => (treeTime - currentTime) * speed);
 }
 
+const beats = [0, 1, 2, 2.5, 3, 4, 4.5, 5, 5.5, 6.5, 7];
+
 export function treeOutlineAngles() {
   if (startTime === null) {
-    return noTrees;
+    return emptyArray;
   }
 
   const { currentTime } = audioContext;
 
+  // TODO: only return outlines that are visible
   return beats.map(
     position => [
       (startTime + beatTime * position - currentTime) * speed,
@@ -72,7 +73,7 @@ const lines = Array(8).fill();
 
 export function lineAngles() {
   if (startTime === null) {
-    return noTrees;
+    return emptyArray;
   }
 
   let first = (startTime - audioContext.currentTime) * speed;

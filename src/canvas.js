@@ -7,6 +7,11 @@ const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 
 const ratio = 16 / 9;
+
+const midX = 0.2;
+const midY = 10;
+const baseRadius = 9.2;
+
 let width;
 let height;
 let resized = true;
@@ -55,10 +60,6 @@ const tree = svgImage(`
     <path d="M20.5 1L39 44H1z" fill="#64a154" stroke="#64a154" ${strokeStyle} />
   </svg>
 `);
-
-const midX = 0.2;
-const midY = 10;
-const baseRadius = 9.2;
 
 function sizeMultiplier() {
   return coordY(baseRadius) / 4000;
