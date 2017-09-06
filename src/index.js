@@ -1,7 +1,7 @@
 import 'canvas';
-import { addTree } from 'beatStore';
 import * as samples from 'Samples';
 import * as songs from 'Songs';
+import { addTree } from 'store';
 
 let playing = false;
 

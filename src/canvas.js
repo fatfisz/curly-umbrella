@@ -1,6 +1,6 @@
 import audioContext from 'audioContext';
-import { beatValue, lineAngles, treeAngles, treeOutlineAngles } from 'beatStore';
 import { circle } from 'consts';
+import { beatValue, lineAngles, treeAngles, treeOutlineAngles } from 'store';
 import svgImage from 'svgImage';
 
 const canvas = document.getElementById('canvas');

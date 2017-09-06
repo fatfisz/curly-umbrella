@@ -3,7 +3,7 @@
  */
 
 import audioContext from 'audioContext';
-import { startBeat, stopBeat } from 'beatStore';
+import { startBeat, stopBeat } from 'store';
 
 const masterVolume = 0.35;
 
