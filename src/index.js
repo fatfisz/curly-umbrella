@@ -19,12 +19,14 @@ document.getElementById('canvas').onclick = togglePlay;
 
 window.onkeydown = ({ which }) => {
   if (which == 67 || which == 88) { // c or x
-    samples.key1.play();
-    addTree();
+    if (addTree()) {
+      samples.key1.play();
+    }
   }
 
   if (which == 86 || which == 90) { // v or z
-    samples.key2.play();
-    addTree();
+    if (addTree()) {
+      samples.key2.play();
+    }
   }
 };

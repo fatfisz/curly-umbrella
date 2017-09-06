@@ -5,13 +5,17 @@ const speed = 0.08;
 const initialDelay = circle / 16 / speed;
 const emptyArray = [];
 const trees = [];
+export const distances = [];
 let startTime = null;
 let beatTime;
+let tick;
 
 export function startBeat(bpm) {
   beatTime = 60 / bpm;
+  tick = beatTime / 4;
   startTime = audioContext.currentTime + initialDelay;
   trees.length = 0;
+  distances.length = 0;
   return startTime;
 }
 
@@ -19,8 +23,59 @@ export function stopBeat() {
   startTime = null;
 }
 
+function getTickFloor(currentTime) {
+  const elapsedTime = currentTime - startTime;
+  if (elapsedTime < 0) {
+    return startTime;
+  } else {
+    return startTime + tick * Math.floor(elapsedTime / tick);
+  }
+}
+
+function getLastTree() {
+  if (trees.length === 0) {
+    return null;
+  }
+
+  return trees[trees.length - 1];
+}
+
 export function addTree() {
-  trees.push(audioContext.currentTime);
+  if (startTime === null) {
+    return false;
+  }
+
+  const { currentTime } = audioContext;
+  const tickFloor = getTickFloor(currentTime);
+  const lastTree = getLastTree();
+  let canAddTree = false;
+
+  if (lastTree === null) {
+    canAddTree = true;
+  } else {
+    if (lastTree >= tickFloor + tick / 2) {
+      // Definitely too many trees
+    } else if (currentTime >= tickFloor + tick / 2) {
+      canAddTree = true;
+    } else if (lastTree >= tickFloor - tick / 2) {
+      // Still too many
+    } else {
+      canAddTree = true;
+    }
+  }
+
+  if (canAddTree) {
+    trees.push(currentTime);
+
+    const timeAfter = currentTime - tickFloor;
+    const timeBefore = tickFloor + tick - currentTime;
+    const distance = (timeAfter < timeBefore ? timeAfter : -timeBefore) / (tick / 2);
+    if (Math.abs(distance) <= 1) {
+      distances.push(distance);
+    }
+  }
+
+  return canAddTree;
 }
 
 // The planet pulsation animation
