@@ -106,7 +106,7 @@ function lineCleanup() {
 }
 
 function drawInfoBackground() {
-  context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  context.fillStyle = 'rgba(0, 0, 0, 0.6)';
   context.fillRect(...coords(0, 1 - distanceBarMargin * 2 - distanceBarHeight), ...coords(1, 1));
 }
 
