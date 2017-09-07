@@ -1,10 +1,8 @@
 import audioContext from 'audioContext';
 import { circle } from 'consts';
+import context, { canvas } from 'context';
 import { beatValue, distances, lineAngles, treeAngles, treeOutlineAngles } from 'store';
 import svgImage from 'svgImage';
-
-const canvas = document.getElementById('canvas');
-const context = canvas.getContext('2d');
 
 const ratio = 16 / 9;
 
