@@ -15,18 +15,24 @@ function togglePlay() {
   playing = !playing;
 }
 
-document.getElementById('canvas').onclick = togglePlay;
-
 window.onkeydown = ({ which }) => {
-  if (which == 67 || which == 88) { // c or x
-    if (addTree()) {
-      samples.key1.play();
-    }
-  }
+  switch (which) {
+    case 32:
+      togglePlay();
+      break;
 
-  if (which == 86 || which == 90) { // v or z
-    if (addTree()) {
-      samples.key2.play();
-    }
+    case 67:
+    case 88: // c or x
+      if (addTree()) {
+        samples.key1.play();
+      }
+      break;
+
+    case 86:
+    case 90: // v or z
+      if (addTree()) {
+        samples.key2.play();
+      }
+      break;
   }
 };
