@@ -1,6 +1,7 @@
 import audioContext from 'audioContext';
 import { circle } from 'consts';
 import context, { canvas } from 'context';
+import drawText from 'drawText';
 import { beatValue, distances, lineAngles, treeAngles, treeOutlineAngles } from 'store';
 import svgImage from 'svgImage';
 
@@ -134,9 +135,19 @@ function drawDistanceBar() {
   });
 }
 
+function drawScore() {
+  drawText(
+    coordY(distanceBarHeight),
+    `score: 9876543210`,
+    ...coords(distanceBarMargin, 1 - distanceBarMargin - distanceBarHeight),
+    '#fff',
+  );
+}
+
 function drawInfo() {
   drawInfoBackground();
   drawDistanceBar();
+  drawScore();
 }
 
 function draw(now) {
